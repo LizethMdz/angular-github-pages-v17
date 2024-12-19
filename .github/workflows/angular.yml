@@ -16,9 +16,9 @@ jobs:
       with:
         github_access_token: ${{ github.token }} # see the Configuration section for how you can create secrets
         build_configuration: production # The build environment for the app. please look configurations in your angular.json
-        base_href: /28-dashboard/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
+        base_href: /  # make sure this corresponds to https://<your_username>.github.io/<base_href>/
         deploy_branch: gh-pages # The branch the action should deploy to.
-        angular_dist_build_folder: dist/28-dashboard # The folder where your project is supposed to be after running ng build by the action.
+        angular_dist_build_folder: dist/28-dashboard/browser # The folder where your project is supposed to be after running ng build by the action.
 
 permissions:
   contents: write
