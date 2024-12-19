@@ -37,5 +37,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # Usa el token integrado
+          github_token: ${{ github.token }} # Usa el token integrado
           publish_dir: ./dist/28-dashboard
