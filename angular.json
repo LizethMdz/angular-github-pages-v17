@@ -36,6 +36,7 @@
           },
           "configurations": {
             "production": {
+              "outputPath": "dist/28-dashboard",
               "budgets": [
                 {
                   "type": "initial",
