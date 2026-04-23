@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube-angular
+    depends_on:
+      - sonardb
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonardb:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - sonar_data:/opt/sonarqube/data
+      - sonar_extensions:/opt/sonarqube/extensions
+      - sonar_logs:/opt/sonarqube/logs
+
+  sonardb:
+    image: postgres:15
+    container_name: sonar-db
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    volumes:
+      - sonar_db:/var/lib/postgresql/data
+
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    container_name: zap-security-scan
+    ports:
+      - "8081:8080"
+    command: zap.sh -daemon -host 0.0.0.0 -port 8080
+    volumes:
+      - ./zap-reports:/zap/wrk
+
+  eslint:
+    image: node:20
+    container_name: angular-eslint
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: >
+      sh -c "npm install && npx eslint 'src/**/*.ts'"
+
+volumes:
+  sonar_data:
+  sonar_extensions:
+  sonar_logs:
+  sonar_db:
