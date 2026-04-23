@@ -28,6 +28,18 @@ services:
     volumes:
       - sonar_db:/var/lib/postgresql/data
 
+  # Herramienta que ejecuta el escaneo (Incluye Java 17+)
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli
+    container_name: sonar-scanner
+    volumes:
+      - .:/usr/src
+    environment:
+      - SONAR_HOST_URL=http://sonarqube:9000
+      - SONAR_TOKEN=${SONAR_TOKEN:-} 
+    depends_on:
+      - sonarqube
+
   zap:
     image: ghcr.io/zaproxy/zaproxy:stable
     container_name: zap-security-scan
