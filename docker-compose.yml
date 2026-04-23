@@ -9,24 +9,11 @@ services:
       - sonardb
     ports:
       - "9000:9000"
-    environment:
-      SONAR_JDBC_URL: jdbc:postgresql://sonardb:5432/sonar
-      SONAR_JDBC_USERNAME: sonar
-      SONAR_JDBC_PASSWORD: sonar
     volumes:
       - sonar_data:/opt/sonarqube/data
       - sonar_extensions:/opt/sonarqube/extensions
       - sonar_logs:/opt/sonarqube/logs
 
-  sonardb:
-    image: postgres:15
-    container_name: sonar-db
-    environment:
-      POSTGRES_USER: sonar
-      POSTGRES_PASSWORD: sonar
-      POSTGRES_DB: sonar
-    volumes:
-      - sonar_db:/var/lib/postgresql/data
 
   # Herramienta que ejecuta el escaneo (Incluye Java 17+)
   sonar-scanner:
@@ -36,7 +23,25 @@ services:
       - .:/usr/src
     environment:
       - SONAR_HOST_URL=http://sonarqube:9000
-      - SONAR_TOKEN=sqp_1a11ea16ba5d3643efc6032e46a42612740527dc
+      - SONAR_TOKEN=sqp_b846539d7b88ac4e7e069cc072fdab1301565930
+      #- SONAR_TOKEN=sqp_1a11ea16ba5d3643efc6032e46a42612740527dc
+    depends_on:
+      - sonarqube
+
+  sonar-report-gen:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: sonar-report-generator
+    volumes:
+      - .:/app
+      - ./reportes:/out
+    # El comando ejecuta Java, se conecta al servicio 'sonarqube' y guarda en '/out'
+    working_dir: /app
+    command: >
+      java -jar /app/sonar-cnes-report-5.0.2.jar
+      -t squ_50d2df4f67b2e6bbfd1ad742119bbd2442fc8ac6
+      -s http://sonarqube:9000
+      -p github-pages
+      -o /out
     depends_on:
       - sonarqube
 
