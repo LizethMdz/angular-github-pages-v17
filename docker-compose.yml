@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   sonarqube:
-    image: sonarqube:community
+    image: sonarqube:25.2.0.102705-community
     container_name: sonarqube-angular
     depends_on:
       - sonardb
