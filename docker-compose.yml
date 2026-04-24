@@ -47,11 +47,11 @@ services:
   zap:
     image: ghcr.io/zaproxy/zaproxy:stable
     container_name: zap-security-scan
+    network_mode: "host"
     volumes:
       - ./zap-reports:/zap/wrk:rw
-    # El comando ejecuta un escaneo base y genera un reporte HTML
     command: >
-      zap-baseline.py -t http://host.docker.internal:4200 
+      zap-full-scan.py -t http://host.docker.internal:4200 -a -j
       -r reporte_seguridad.html
 
 volumes:
