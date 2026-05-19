@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+
+  sonarqube:
+    image: sonarqube:25.2.0.102705-community
+    container_name: sonarqube-angular
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonar_data:/opt/sonarqube/data
+      - sonar_extensions:/opt/sonarqube/extensions
+      - sonar_logs:/opt/sonarqube/logs
+
+
+  # Escaneo para SonarQube
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli
+    container_name: sonar-scanner
+    volumes:
+      - .:/usr/src
+    environment:
+      - SONAR_HOST_URL=http://sonarqube:9000
+      - SONAR_TOKEN=sqp_31a391ff5d56aac1289489e3a5851346c93b99bb
+      #- SONAR_TOKEN=sqp_1a11ea16ba5d3643efc6032e46a42612740527dc
+    depends_on:
+      - sonarqube
+
+  # Escaneo para generar reportes en word/excel/json
+  sonar-report-gen:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: sonar-report-generator
+    volumes:
+      - .:/app
+      - ./reportes:/out
+    # El comando ejecuta Java, se conecta al servicio 'sonarqube' y guarda en '/out'
+    working_dir: /app
+    command: >
+      java -jar /app/sonar-cnes-report-5.0.2.jar
+      -t squ_50d2df4f67b2e6bbfd1ad742119bbd2442fc8ac6
+      -s http://sonarqube:9000
+      -p github-pages
+      -o /out
+    depends_on:
+      - sonarqube
+
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    container_name: zap-security-scan
+    network_mode: "host"
+    volumes:
+      - ./zap-reports:/zap/wrk:rw
+    command: >
+      zap-full-scan.py -t http://host.docker.internal:4200 -a -j
+      -r reporte_seguridad.html
+
+volumes:
+  sonar_data:
+  sonar_extensions:
+  sonar_logs:
+  sonar_db:

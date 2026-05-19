@@ -5,6 +5,8 @@
 /tmp
 /out-tsc
 /bazel-out
+/reportes
+/zap-reports
 
 # Node
 /node_modules
