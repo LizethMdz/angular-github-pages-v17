@@ -28,8 +28,18 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 # SonarQube
 
-sonar-scanner \
+`sonar-scanner \
   -Dsonar.projectKey=github-pages \
   -Dsonar.sources=. \
   -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.token=sqp_1a11ea16ba5d3643efc6032e46a42612740527dc
+  -Dsonar.token=sqp_1a11ea16ba5d3643efc6032e46a42612740527dc`
+
+# Sonar Docker 
+
+## Comando desde la terminal
+
+`docker compose run --rm sonar-scanner sonar-scanner \
+ -Dsonar.projectKey=github-pages \
+ -Dsonar.sources=. \
+ -Dsonar.host.url=http://sonarqube:9000 \
+ -Dsonar.token=sqp_1a11ea16ba5d3643efc6032e46a42612740527dc`
